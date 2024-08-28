@@ -2,17 +2,16 @@ import './App.css'
 import {ReactFlow} from "@xyflow/react";
 import '@xyflow/react/dist/style.css';
 import {
-    Badge,
-    Button, ButtonGroup,
+    Button,
     Card,
     CardBody,
-    CardHeader, Checkbox, Chip, Divider,
+    CardHeader, Checkbox, Chip,
     Dropdown,
     DropdownItem,
     DropdownMenu, DropdownSection,
-    DropdownTrigger, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tooltip
+    DropdownTrigger, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader
 } from "@nextui-org/react";
-import {Eye, EyeOff, Github, Moon, Save, Signal, Sun} from "lucide-react";
+import {Eye, EyeOff, Moon, Save, Signal, Sun, X} from "lucide-react";
 import {useTheme} from "next-themes";
 import {ReactElement, useState} from "react";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -136,21 +135,38 @@ function MainMenuModal() {
 
     function DefaultPage() {
         return <>
-            <div className={"flex justify-between"}>
+            <div className={"flex justify-between gap-4"}>
                 <div className={"flex flex-col gap-2 max-w-[50%] grow"}>
                     <h1 className={"text-xl text-default"}>Main</h1>
-                    <Button size={"sm"} className={"justify-start"}>Create New Project</Button>
-                    <Button size={"sm"} className={"justify-start"}>Open Existing Project</Button>
-                    <Button size={"sm"} className={"justify-start"}>Disconnect from API</Button>
+                    <div className={"flex flex-col grow justify-between gap-2"}>
+                        <div className={"flex flex-col gap-2"}>
+                            <Button variant={"flat"} size={"sm"} className={"justify-start bg-success/[.3] text-success-700 dark:text-success/[.75] dark:bg-success/[.125]"}>Create New Project</Button>
+                            <Button variant={"flat"} size={"sm"} className={"justify-start"}>Open Existing Project</Button>
+                        </div>
+                        <Button size={"sm"} className={"justify-start animate-pulse"} color={"danger"} variant={"flat"}>Disconnect from API</Button>
+                    </div>
                 </div>
-                <div className={"flex justify-start items-end flex-col h-72"}>
-                <h1 className={"text-xl text-default"}>Recent Projects</h1>
-                    <div className={"flex flex-col items-end"}>
-                        <Button variant={"flat"} className={"h-fit"}>
-                            <div className={"flex flex-col items-start py-1"}>
-                                <div>Project 1</div>
-                                <div>Created: 2021-10-10</div>
+                <div className={"flex justify-start items-end flex-col h-72 grow max-w-[50%]"}>
+                    <h1 className={"text-xl text-default"}>Recent Projects</h1>
+                    <div className={"flex flex-col items-end w-full gap-2 pt-2"}>
+                        <Button variant={"flat"} className={"h-fit w-full justify-between pr-0"}>
+                            <div className={"flex flex-col items-start py-1 w-full"}>
+                                <div className={"flex justify-between w-full"}>
+                                    <p className={"text-md"}>Project 1</p>
+                                    <p className={"text-md"}>Project 1</p>
+                                    <p className={"text-md"}>Project 1</p>
+                                </div>
+                                <p className={"text-xs"}>Created: 2021-10-10</p>
                             </div>
+                            <motion.div
+                                initial={{translateX: "75%"}}
+                                whileHover={{translateX: 0}}
+                            >
+                                <Card
+                                    className={"aspect-square rounded-xl px-2 py-1 flex justify-center items-center border-1.5 border-danger/[.125] bg-danger"}>
+                                    <X/>
+                                </Card>
+                            </motion.div>
                         </Button>
                     </div>
                 </div>
@@ -191,16 +207,28 @@ function MainMenuModal() {
         transition: {duration: .5}
     }
 
+    const {theme, setTheme} = useTheme()
+
     return (
         <>
-            <Modal isDismissable={false} defaultOpen backdrop={"blur"} hideCloseButton size={"3xl"}>
+            <Modal isDismissable={false} defaultOpen backdrop={"blur"} hideCloseButton size={"3xl"} className={"scrollbar-hide"}>
                 <ModalContent>
                     <ModalHeader>
-                        <div>
-                            <h1 className={"text-2xl"}>Welcome to OpenConversation</h1>
-                            <div className={"flex gap-2"}>
-                                <Chip variant={"flat"} color={"success"} size={"sm"}>v1.0.0</Chip>
-                                <Chip variant={"flat"} color={"default"} size={"sm"} className={"text-foreground/[.5]"}>GitHub</Chip>
+                        <div className={"flex w-full justify-between"}>
+                            <div>
+                                <h1 className={"text-2xl"}>Welcome to OpenConversation</h1>
+                                <div className={"flex gap-2"}>
+                                    <Chip variant={"flat"} color={"success"} size={"sm"}>v1.0.0</Chip>
+                                    <Chip variant={"flat"} color={"default"} size={"sm"}
+                                          className={"text-foreground/[.5]"}>GitHub</Chip>
+                                </div>
+                            </div>
+                            <div>
+                                <Card
+                                    className={"aspect-square rounded-xl px-2 py-1 flex justify-center items-center border-1.5 border-foreground/[.125]"}
+                                    onMouseDown={() => setTheme(theme == "light" ? "dark" : "light")}>
+                                    {theme == "light" ? <Moon size={16}/> : <Sun size={16}/>}
+                                </Card>
                             </div>
                         </div>
                     </ModalHeader>
@@ -215,7 +243,7 @@ function MainMenuModal() {
                         <div className={"flex flex-col gap-2"}>
                             <Chip variant={"flat"} color={"default"}
                                   className={"min-w-full max-w-full p-2 py-4 rounded-xl border-2 border-default/[.5] text-foreground/[.75]"}>
-                            OpenConversation is a tool to simulate conversations with multiple AI agents.
+                                OpenConversation is a tool to simulate conversations with multiple AI agents.
                             </Chip>
                             <Chip variant={"flat"} color={"warning"}
                                           className={"w-full h-fit text-wrap flex-wrap p-2 rounded-xl border-2 border-warning/[.125] max-w-full"}
