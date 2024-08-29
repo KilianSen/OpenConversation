@@ -2,9 +2,34 @@ import {useTheme} from "next-themes";
 import {Card, DropdownItem, DropdownSection} from "@nextui-org/react";
 import {MenuLabel} from "../components/MenuLabel.tsx";
 import {Moon, Save, Signal, Sun} from "lucide-react";
+import {useProject} from "../state/project.tsx";
+
+export function SaveProject() {
+    const project = useProject()
+
+    // get PrjectData[] form local storage
+    const localProjects = localStorage.getItem("projects")
+    const projects = localProjects ? JSON.parse(localProjects) : []
+
+    // add project to projects
+    projects.push(project.project)
+
+    // save projects to local storage
+    localStorage.setItem("projects", JSON.stringify(projects))
+}
+
+export function OpenProject() {
+    // open file dialog
+
+}
+
+export function SaveAsProject() {
+
+}
 
 export function MenuBar() {
     const {theme, setTheme} = useTheme()
+    const project = useProject()
 
 
     return <div className={"absolute z-50 w-full flex justify-center px-10 py-5"}>
@@ -13,13 +38,13 @@ export function MenuBar() {
                 <div className={"flex flex-row gap-4 cursor-default select-none"}>
                     <MenuLabel trigger={<div>Project</div>}>
                         <DropdownSection showDivider>
-                            <DropdownItem shortcut={"⌘⇧N"}>New Project</DropdownItem>
+                            <DropdownItem shortcut={"⌘⇧N"} onClick={() => project.createProject()}>New Project</DropdownItem>
                             <DropdownItem shortcut={"⌘⇧O"}>Open Project</DropdownItem>
                         </DropdownSection>
                         <DropdownSection showDivider>
-                            <DropdownItem shortcut={"⌘S"}>Save Project</DropdownItem>
-                            <DropdownItem shortcut={"⌘⇧S"}>Save As</DropdownItem>
-                            <DropdownItem isDisabled color={"danger"}>Close Project</DropdownItem>
+                            <DropdownItem isDisabled={!project.isProjectOpen} shortcut={"⌘S"}>Save Project</DropdownItem>
+                            <DropdownItem isDisabled={!project.isProjectOpen} shortcut={"⌘⇧S"}>Save As</DropdownItem>
+                            <DropdownItem isDisabled={!project.isProjectOpen} onClick={() => project.closeProject()} color={"danger"}>Close Project</DropdownItem>
                         </DropdownSection>
                         <DropdownSection>
                             <DropdownItem shortcut={"⌘K"}>Settings</DropdownItem>

@@ -12,84 +12,93 @@ import {
     useDisclosure
 } from "@nextui-org/react";
 import {AnimatePresence, motion} from "framer-motion";
-import {Eye, EyeOff, Moon, Signal, Sun, X} from "lucide-react";
-import {useState} from "react";
+import {Eye, EyeOff, Moon, Signal, Sun} from "lucide-react";
+import {useEffect, useState} from "react";
 import {useTheme} from "next-themes";
+import {useProject} from "../state/project.tsx";
+import {ProjectData} from "../providers/ProjectProvider.tsx";
+import {RecentProjectButton} from "../components/RecentProjectButton.tsx";
+
+function DefaultPage() {
+    const [localStorageProjects, setLocalStorageProjects] = useState<ProjectData[]>([])
+    const project = useProject()
+
+    useEffect(() => {
+        const localProjects = localStorage.getItem("projects")
+        if (localProjects) {
+            setLocalStorageProjects(JSON.parse(localProjects))
+        }
+    }, []);
+
+    return <>
+        <div className={"flex justify-between gap-4"}>
+            <div className={"flex flex-col gap-2 max-w-[50%] grow"}>
+                <h1 className={"text-xl text-default"}>Main</h1>
+                <div className={"flex flex-col grow justify-between gap-2"}>
+                    <div className={"flex flex-col gap-2"}>
+                        <Button variant={"flat"} size={"sm"}
+                                className={"justify-start bg-success/[.3] text-success-700 dark:text-success/[.75] dark:bg-success/[.125]"}
+                                onClick={() => project.createProject()}>Create New Project</Button>
+                        <Button variant={"flat"} size={"sm"} className={"justify-start"}>Open Existing
+                            Project</Button>
+                    </div>
+                    <Button size={"sm"} className={"justify-start animate-pulse"} color={"danger"} variant={"flat"}>Disconnect
+                        from API</Button>
+                </div>
+            </div>
+            <div className={"flex justify-start items-end flex-col h-72 grow max-w-[50%]"}>
+                <h1 className={"text-xl text-default"}>Recent Projects</h1>
+                <div className={"flex flex-col items-end w-full gap-2 pt-2"}>
+                    {  localStorageProjects.length == 0 ? <p className={"text-default"}>No recent projects</p> :
+                        localStorageProjects.map((project, i) => <RecentProjectButton key={i} project={project}/>)
+                    }
+                </div>
+            </div>
+        </div>
+    </>
+}
+
+function ConnectPage({onClicked}: { onClicked?: () => void }) {
+    const [isAnonymous, setIsAnonymous] = useState(true)
+    const [keyVisible, setKeyVisible] = useState(false)
+
+    return <>
+        <div className={"flex flex-col items-center gap-2"}>
+            <h1>Connect to an OpenAI API</h1>
+            <Input placeholder={"API Endpoint"} type={"password"} className={"w-full"} endContent={<Signal/>}/>
+            <Input placeholder={"API Key"} type={!keyVisible ? "password" : "text"} className={"w-full"}
+                   endContent={keyVisible ? <Eye onClick={() => setKeyVisible(!keyVisible)}/> :
+                       <EyeOff onClick={() => setKeyVisible(!keyVisible)}/>} isDisabled={isAnonymous}/>
+            <div className={"flex w-full"}>
+                <div className={"flex"}>
+                    <Checkbox defaultSelected={isAnonymous} isSelected={isAnonymous} onValueChange={(s) => {
+                        setIsAnonymous(s)
+                        setKeyVisible(false)
+                    }}>Anonymous</Checkbox>
+                </div>
+                <div className={"w-full flex justify-end"}>
+                    <Button onClick={onClicked}>Connect</Button>
+                </div>
+            </div>
+        </div>
+    </>
+}
 
 export function MainMenuModal() {
-    const {isOpen, onClose} = useDisclosure({defaultOpen: true});
+    const {isOpen, onClose, onOpen} = useDisclosure({defaultOpen: true});
+
+    const project = useProject()
+
+    useEffect(() => {
+        if (project.isProjectOpen) {
+            onClose()
+        } else {
+            onOpen()
+        }
+    }, [onClose, onOpen, project.isProjectOpen]);
 
 
-    function DefaultPage() {
-        return <>
-            <div className={"flex justify-between gap-4"}>
-                <div className={"flex flex-col gap-2 max-w-[50%] grow"}>
-                    <h1 className={"text-xl text-default"}>Main</h1>
-                    <div className={"flex flex-col grow justify-between gap-2"}>
-                        <div className={"flex flex-col gap-2"}>
-                            <Button variant={"flat"} size={"sm"}
-                                    className={"justify-start bg-success/[.3] text-success-700 dark:text-success/[.75] dark:bg-success/[.125]"}
-                                    onClick={() => onClose()}>Create New Project</Button>
-                            <Button variant={"flat"} size={"sm"} className={"justify-start"}>Open Existing
-                                Project</Button>
-                        </div>
-                        <Button size={"sm"} className={"justify-start animate-pulse"} color={"danger"} variant={"flat"}>Disconnect
-                            from API</Button>
-                    </div>
-                </div>
-                <div className={"flex justify-start items-end flex-col h-72 grow max-w-[50%]"}>
-                    <h1 className={"text-xl text-default"}>Recent Projects</h1>
-                    <div className={"flex flex-col items-end w-full gap-2 pt-2"}>
-                        <Button variant={"flat"} className={"h-fit w-full justify-between pr-0"}>
-                            <div className={"flex flex-col items-start py-1 w-full"}>
-                                <div className={"flex justify-between w-full"}>
-                                    <p className={"text-md"}>Project 1</p>
-                                    <p className={"text-md"}>Project 1</p>
-                                    <p className={"text-md"}>Project 1</p>
-                                </div>
-                                <p className={"text-xs"}>Created: 2021-10-10</p>
-                            </div>
-                            <motion.div
-                                initial={{translateX: "75%"}}
-                                whileHover={{translateX: 0}}
-                            >
-                                <Card
-                                    className={"aspect-square rounded-xl px-2 py-1 flex justify-center items-center border-1.5 border-danger/[.125] bg-danger"}>
-                                    <X/>
-                                </Card>
-                            </motion.div>
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </>
-    }
 
-    function ConnectPage({onClicked}: { onClicked?: () => void }) {
-        const [isAnonymous, setIsAnonymous] = useState(true)
-        const [keyVisible, setKeyVisible] = useState(false)
-
-        return <>
-            <div className={"flex flex-col items-center gap-2"}>
-                <h1>Connect to an OpenAI API</h1>
-                <Input placeholder={"API Endpoint"} type={"password"} className={"w-full"} endContent={<Signal/>}/>
-                <Input placeholder={"API Key"} type={!keyVisible ? "password" : "text"} className={"w-full"}
-                       endContent={keyVisible ? <Eye onClick={() => setKeyVisible(!keyVisible)}/> :
-                           <EyeOff onClick={() => setKeyVisible(!keyVisible)}/>} isDisabled={isAnonymous}/>
-                <div className={"flex w-full"}>
-                    <div className={"flex"}>
-                        <Checkbox defaultSelected={isAnonymous} isSelected={isAnonymous} onValueChange={(s) => {
-                            setIsAnonymous(s)
-                            setKeyVisible(false)
-                        }}>Anonymous</Checkbox>
-                    </div>
-                    <div className={"w-full flex justify-end"}>
-                        <Button onClick={onClicked}>Connect</Button>
-                    </div>
-                </div>
-            </div>
-        </>
-    }
 
     const [page, setPage] = useState(0)
 

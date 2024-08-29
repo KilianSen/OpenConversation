@@ -1,5 +1,5 @@
 import '@xyflow/react/dist/style.css';
-import {MainMenuModal} from "./components/MainMenuModal.tsx";
+import {MainMenuModal} from "./screens/MainMenuModal.tsx";
 import {MenuBar} from "./screens/MenuBar.tsx";
 import {ChatWindow} from "./screens/ChatWindow.tsx";
 import {Graph} from "./components/Graph.tsx";
@@ -7,6 +7,7 @@ import {createRoot} from "react-dom/client";
 import {ReactNode, StrictMode} from "react";
 import {NextUIProvider} from "@nextui-org/react";
 import {ThemeProvider as NextThemesProvider} from "next-themes";
+import ProjectProvider from "./providers/ProjectProvider.tsx";
 
 
 createRoot(document.getElementById('root')!).render(<Root/>,)
@@ -36,7 +37,9 @@ function Layout({children}: { children?: ReactNode }) {
 function Provider({children}: { children?: ReactNode }) {
     return <NextUIProvider>
         <NextThemesProvider attribute={"class"} defaultTheme={"dark"}>
-            {children}
+            <ProjectProvider>
+                {children}
+            </ProjectProvider>
         </NextThemesProvider>
     </NextUIProvider>
 }
