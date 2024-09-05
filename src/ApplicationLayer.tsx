@@ -8,6 +8,7 @@ import {ReactNode, StrictMode} from "react";
 import {NextUIProvider} from "@nextui-org/react";
 import {ThemeProvider as NextThemesProvider} from "next-themes";
 import ProjectProvider from "./providers/ProjectProvider.tsx";
+import {SettingsProvider} from "./providers/SettingsProvider.tsx";
 
 
 createRoot(document.getElementById('root')!).render(<Root/>,)
@@ -34,14 +35,23 @@ function Layout({children}: { children?: ReactNode }) {
     </>
 }
 
+export type UserSettings = {
+    theme: string;
+    darkMode: boolean;
+    showChat: boolean;
+    showGraph: boolean;
+}
+
 function Provider({children}: { children?: ReactNode }) {
-    return <NextUIProvider>
-        <NextThemesProvider attribute={"class"} defaultTheme={"dark"}>
-            <ProjectProvider>
-                {children}
-            </ProjectProvider>
-        </NextThemesProvider>
-    </NextUIProvider>
+    return <SettingsProvider defaultValue={{theme: "wow",darkMode: false, showChat:false, showGraph: false} as UserSettings}>
+        <NextUIProvider>
+            <NextThemesProvider attribute={"class"} defaultTheme={"dark"}>
+                <ProjectProvider>
+                    {children}
+                </ProjectProvider>
+            </NextThemesProvider>
+        </NextUIProvider>
+    </SettingsProvider>
 }
 
 // export for fast refresh

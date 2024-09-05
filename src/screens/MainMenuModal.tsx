@@ -18,6 +18,7 @@ import {useTheme} from "next-themes";
 import {useProject} from "../state/project.tsx";
 import {ProjectData} from "../providers/ProjectProvider.tsx";
 import {RecentProjectButton} from "../components/RecentProjectButton.tsx";
+import Test from "../components/Test.tsx";
 
 function DefaultPage() {
     const [localStorageProjects, setLocalStorageProjects] = useState<ProjectData[]>([])
@@ -144,10 +145,20 @@ export function MainMenuModal() {
                     </ModalBody>
                     <ModalFooter>
                         <div className={"flex flex-col gap-2"}>
-                            <Chip variant={"flat"} color={"default"}
-                                  className={"min-w-full max-w-full p-2 py-4 rounded-xl border-2 border-default/[.5] text-foreground/[.75]"}>
-                                OpenConversation is a tool to simulate conversations with multiple AI agents.
-                            </Chip>
+                            <div className={"flex flex-row w-full gap-2"}>
+                                <div className={"grow"}>
+                                    <Chip variant={"flat"} color={"default"}
+                                          className={"min-w-full p-2 py-4 rounded-xl border-2 border-default/[.5] text-foreground/[.75]"}>
+                                        OpenConversation is a tool to simulate conversations with multiple AI agents.
+                                    </Chip>
+                                    <Test></Test>
+                                </div>
+                                <Chip
+                                    variant={"flat"} color={"default"}
+                                    className={"shrink bg-transparent p-2 py-4 rounded-xl border-2 border-default/[.5] text-foreground/[.75]"}>
+                                    Hide
+                                </Chip>
+                            </div>
                             <Chip variant={"flat"} color={"warning"}
                                   className={"w-full h-fit text-wrap flex-wrap p-2 rounded-xl border-2 border-warning/[.125] max-w-full"}
                                   aria-multiline>This tool is not intended to be used for 1 on 1 conversations, with a
