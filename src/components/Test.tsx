@@ -1,5 +1,5 @@
-import {useSettings} from "../providers/settingsHook.ts";
 import {UserSettings} from "../ApplicationLayer.tsx";
+import {useSettings} from "../providers/SettingsProvider.tsx";
 
 export default function Test() {
     const settings = useSettings<UserSettings>();

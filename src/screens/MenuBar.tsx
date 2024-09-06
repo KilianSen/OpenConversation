@@ -2,7 +2,7 @@ import {useTheme} from "next-themes";
 import {Card, DropdownItem, DropdownSection} from "@nextui-org/react";
 import {MenuLabel} from "../components/MenuLabel.tsx";
 import {Moon, Save, Signal, Sun} from "lucide-react";
-import {useProject} from "../state/project.tsx";
+import {useProject} from "../helpers/project.tsx";
 
 export function SaveProject() {
     const project = useProject()

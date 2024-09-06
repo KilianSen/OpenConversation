@@ -1,4 +1,4 @@
-import { DummyProjectProvider as DummyProjectProvider } from '../state/project.tsx';
+import { DummyProjectProvider as DummyProjectProvider } from '../helpers/project.tsx';
 import {ReactNode, useState} from "react";
 
 export type ProjectData = {

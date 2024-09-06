@@ -43,7 +43,7 @@ export type UserSettings = {
 }
 
 function Provider({children}: { children?: ReactNode }) {
-    return <SettingsProvider defaultValue={{theme: "wow",darkMode: false, showChat:false, showGraph: false} as UserSettings}>
+    return <SettingsProvider defaultValue={{theme: "wow",darkMode: false, showChat:false, showGraph: false} as UserSettings} localStoragePrefix={"user-settings-"}>
         <NextUIProvider>
             <NextThemesProvider attribute={"class"} defaultTheme={"dark"}>
                 <ProjectProvider>

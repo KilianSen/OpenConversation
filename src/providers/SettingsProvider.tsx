@@ -1,57 +1,58 @@
-import {createContext, ReactElement, useEffect, useState} from "react";
-import {proxyObject} from "../state/ProxyObject.tsx";
+import {createContext, ReactElement, useContext} from "react";
+import {ProxyObjectProvider, useProxyObjectContext} from "./ObjectProxyProvider.tsx";
 
-export const settingPrefix = 'user-settings-';
 export const SettingsContext = createContext<object | undefined>(undefined);
-
-function setSettings<T extends object>(field: keyof T, value: T[keyof T]): [boolean, T[keyof T]] {
-    const fieldAsString = String(field); // Ensure field is a string
-    localStorage.setItem(settingPrefix + fieldAsString, JSON.stringify(value));
-    return [true, value];
-}
-function getSettings<T extends object>(field: keyof T): [boolean, T[keyof T] | null] {
-    const fieldAsString = String(field); // Ensure field is a string
-    try {
-        const value = localStorage.getItem(settingPrefix + fieldAsString);
-        if (value) {
-            return [true, JSON.parse(value) as T[keyof T]];
-        } else {
-            localStorage.setItem(settingPrefix + fieldAsString, JSON.stringify(null));
-            console.log(`No settings found for ${fieldAsString}`);
-        }
-    } catch (e) {
-        console.log(`Error getting settings for ${fieldAsString}:`, e);
-    }
-    return [false, null];
-}
 
 type SettingsProviderProps<T> = {
     children: ReactElement;
     defaultValue?: T;
+    localStoragePrefix?: string;
+}
+
+function getStorageMethods(localStoragePrefix?: string) {
+    function setSettingsInLocalStorage<T extends object>(field: keyof T, value: T[keyof T]): [boolean, T[keyof T] | null] {
+        try {
+            localStorage.setItem(localStoragePrefix + String(field), JSON.stringify(value))
+            return [true, value];
+        } catch { /* empty */ }
+        return [false, null];
+    }
+
+    function getSettingsFromLocalStorage<T extends object>(field: keyof T): [boolean, T[keyof T] | null] {
+
+        // Check if the field exists in localStorage and if so, parse it and return it
+        // If it doesn't exist, return null and false which will cause the proxy object to return the fallback value
+        try {
+            const storageKey = localStoragePrefix + String(field)
+            if (!(localStorage.getItem(storageKey) === null))
+                return [true, JSON.parse(localStorage.getItem(storageKey) as string) as T[keyof T]];
+        } catch { /* empty */ }
+        return [false, null];
+    }
+
+    return {setSettingsInLocalStorage, getSettingsFromLocalStorage};
 }
 
 export function SettingsProvider<T extends object>(props: SettingsProviderProps<T>) {
-    const [settings, setSettingsState] = useState<T>(props.defaultValue || {} as T);
+    const storageMethods = getStorageMethods(props.localStoragePrefix);
 
-    const createProxyObject = () => {
-        return proxyObject<T>(settings || props.defaultValue, wrapSetMethod, getSettings);
+    function InternalSettingsProvider() {
+        const settings = useProxyObjectContext();
+
+        return <SettingsContext.Provider value={settings}>
+            {props.children}
+        </SettingsContext.Provider>
     }
 
-    const wrapSetMethod = (field: keyof T, value: T[keyof T]) => {
-        const returnValue = setSettings(field, value);
-        setSettingsState(createProxyObject());
-        return returnValue;
+    return <ProxyObjectProvider proxySet={storageMethods.setSettingsInLocalStorage} proxyGet={storageMethods.getSettingsFromLocalStorage} defaultValue={props.defaultValue}>
+        <InternalSettingsProvider/>
+    </ProxyObjectProvider>
+}
+
+export function useSettings<T extends object>(): T {
+    const settings = useContext(SettingsContext);
+    if (!settings) {
+        throw new Error('useSettings must be used within a SettingsProvider');
     }
-
-    const handleSetup = () => {
-        setSettingsState(createProxyObject());
-    }
-
-    useEffect(() => {
-        handleSetup()
-    }, []);
-
-    return <SettingsContext.Provider value={settings as never}>
-        {props.children}
-    </SettingsContext.Provider>
+    return settings as T;
 }
