@@ -36,14 +36,11 @@ function Layout({children}: { children?: ReactNode }) {
 }
 
 export type UserSettings = {
-    theme: string;
-    darkMode: boolean;
-    showChat: boolean;
-    showGraph: boolean;
+    test: string;
 }
 
 function Provider({children}: { children?: ReactNode }) {
-    return <SettingsProvider defaultValue={{theme: "wow",darkMode: false, showChat:false, showGraph: false} as UserSettings} localStoragePrefix={"user-settings-"}>
+    return <SettingsProvider defaultValue={{} as UserSettings} localStoragePrefix={"user-settings-"}>
         <NextUIProvider>
             <NextThemesProvider attribute={"class"} defaultTheme={"dark"}>
                 <ProjectProvider>

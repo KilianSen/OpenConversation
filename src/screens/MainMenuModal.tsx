@@ -15,10 +15,9 @@ import {AnimatePresence, motion} from "framer-motion";
 import {Eye, EyeOff, Moon, Signal, Sun} from "lucide-react";
 import {useEffect, useState} from "react";
 import {useTheme} from "next-themes";
-import {useProject} from "../helpers/project.tsx";
+import {useProject} from "../utils/project.tsx";
 import {ProjectData} from "../providers/ProjectProvider.tsx";
 import {RecentProjectButton} from "../components/RecentProjectButton.tsx";
-import Test from "../components/Test.tsx";
 
 function DefaultPage() {
     const [localStorageProjects, setLocalStorageProjects] = useState<ProjectData[]>([])
@@ -151,7 +150,6 @@ export function MainMenuModal() {
                                           className={"min-w-full p-2 py-4 rounded-xl border-2 border-default/[.5] text-foreground/[.75]"}>
                                         OpenConversation is a tool to simulate conversations with multiple AI agents.
                                     </Chip>
-                                    <Test></Test>
                                 </div>
                                 <Chip
                                     variant={"flat"} color={"default"}

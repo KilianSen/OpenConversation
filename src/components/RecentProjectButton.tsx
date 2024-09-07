@@ -1,5 +1,5 @@
 import {ProjectData} from "../providers/ProjectProvider.tsx";
-import {useProject} from "../helpers/project.tsx";
+import {useProject} from "../utils/project.tsx";
 import {Button, Card} from "@nextui-org/react";
 import {motion} from "framer-motion";
 import {X} from "lucide-react";
