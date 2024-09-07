@@ -1,14 +1,14 @@
 import '@xyflow/react/dist/style.css';
-import {MainMenuModal} from "./screens/MainMenuModal.tsx";
-import {MenuBar} from "./screens/MenuBar.tsx";
-import {ChatWindow} from "./screens/ChatWindow.tsx";
+import {MainMenuModal} from "./assemblys/MainMenuModal.tsx";
+import {MenuBar} from "./assemblys/MenuBar.tsx";
+import {ChatWindow} from "./assemblys/ChatWindow.tsx";
 import {Graph} from "./components/Graph.tsx";
 import {createRoot} from "react-dom/client";
 import {ReactNode, StrictMode} from "react";
 import {NextUIProvider} from "@nextui-org/react";
 import {ThemeProvider as NextThemesProvider} from "next-themes";
-import ProjectProvider from "./providers/ProjectProvider.tsx";
-import {SettingsProvider} from "./providers/SettingsProvider.tsx";
+import LocalStorageProjectProvider from "./contexts/LocalStorageProjectProvider.tsx";
+import {SettingsProvider} from "./contexts/SettingsProvider.tsx";
 
 
 createRoot(document.getElementById('root')!).render(<Root/>,)
@@ -43,9 +43,9 @@ function Provider({children}: { children?: ReactNode }) {
     return <SettingsProvider defaultValue={{} as UserSettings} localStoragePrefix={"user-settings-"}>
         <NextUIProvider>
             <NextThemesProvider attribute={"class"} defaultTheme={"dark"}>
-                <ProjectProvider>
+                <LocalStorageProjectProvider>
                     {children}
-                </ProjectProvider>
+                </LocalStorageProjectProvider>
             </NextThemesProvider>
         </NextUIProvider>
     </SettingsProvider>

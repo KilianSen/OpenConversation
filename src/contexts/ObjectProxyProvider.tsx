@@ -1,4 +1,4 @@
-import {createContext, ReactElement, useContext, useEffect, useState} from "react";
+import {createContext, ReactElement, useEffect, useState} from "react";
 
 export type ProxyOnSet<T> = (field: keyof T, value: T[keyof T]) => [boolean, T[keyof T] | null];
 export type ProxyOnGet<T> = (field: keyof T) => [boolean, T[keyof T] | null];
@@ -80,6 +80,7 @@ export function ProxyObjectProvider<T extends object>(props: ProxyProviderProps<
 
     useEffect(() => {
         handleSetup()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return <ProxyContext.Provider value={proxiedObject as never}>
@@ -87,10 +88,3 @@ export function ProxyObjectProvider<T extends object>(props: ProxyProviderProps<
     </ProxyContext.Provider>
 }
 
-export function useProxyObjectContext() {
-    const context = useContext(ProxyContext);
-    if (context === undefined) {
-        throw new Error('useProxyContext must be used within a ProxyProvider');
-    }
-    return context;
-}

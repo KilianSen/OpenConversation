@@ -1,5 +1,6 @@
-import {createContext, ReactElement, useContext} from "react";
-import {ProxyObjectProvider, useProxyObjectContext} from "./ObjectProxyProvider.tsx";
+import {createContext, ReactElement} from "react";
+import {ProxyObjectProvider} from "./ObjectProxyProvider.tsx";
+import {useProxyObjectContext} from "../hooks/useProxyObjectContext.tsx";
 
 export const SettingsContext = createContext<object | undefined>(undefined);
 
@@ -49,10 +50,3 @@ export function SettingsProvider<T extends object>(props: SettingsProviderProps<
     </ProxyObjectProvider>
 }
 
-export function useSettings<T extends object>(): T {
-    const settings = useContext(SettingsContext);
-    if (!settings) {
-        throw new Error('useSettings must be used within a SettingsProvider');
-    }
-    return settings as T;
-}

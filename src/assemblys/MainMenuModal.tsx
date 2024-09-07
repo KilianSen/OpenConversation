@@ -15,9 +15,9 @@ import {AnimatePresence, motion} from "framer-motion";
 import {Eye, EyeOff, Moon, Signal, Sun} from "lucide-react";
 import {useEffect, useState} from "react";
 import {useTheme} from "next-themes";
-import {useProject} from "../utils/project.tsx";
-import {ProjectData} from "../providers/ProjectProvider.tsx";
+import {ProjectData} from "../contexts/LocalStorageProjectProvider.tsx";
 import {RecentProjectButton} from "../components/RecentProjectButton.tsx";
+import {useProject} from "../hooks/useProject.tsx";
 
 function DefaultPage() {
     const [localStorageProjects, setLocalStorageProjects] = useState<ProjectData[]>([])

@@ -1,4 +1,4 @@
-import { DummyProjectProvider as DummyProjectProvider } from '../utils/project.tsx';
+import { ProjectProvider as DummyProjectProvider } from './ProjectProvider.tsx';
 import {ReactNode, useState} from "react";
 
 export type ProjectData = {
@@ -7,7 +7,7 @@ export type ProjectData = {
     date: string;
 }
 
-export default function ProjectProvider({ children }: { children?: ReactNode }) {
+export default function LocalStorageProjectProvider({ children }: { children?: ReactNode }) {
     const [projectData, setProjectData] = useState<ProjectData>()
 
     const saveProject = () => {
