@@ -18,6 +18,7 @@ import {useTheme} from "next-themes";
 import {ProjectData} from "../contexts/LocalStorageProjectProvider.tsx";
 import {RecentProjectButton} from "../components/RecentProjectButton.tsx";
 import {useProject} from "../hooks/useProject.tsx";
+import CardStack, {StackCard} from "../components/CardStack.tsx";
 
 function DefaultPage() {
     const [localStorageProjects, setLocalStorageProjects] = useState<ProjectData[]>([])
@@ -143,29 +144,7 @@ export function MainMenuModal() {
                         </AnimatePresence>
                     </ModalBody>
                     <ModalFooter>
-                        <div className={"flex flex-col gap-2"}>
-                            <div className={"flex flex-row w-full gap-2"}>
-                                <div className={"grow"}>
-                                    <Chip variant={"flat"} color={"default"}
-                                          className={"min-w-full p-2 py-4 rounded-xl border-2 border-default/[.5] text-foreground/[.75]"}>
-                                        OpenConversation is a tool to simulate conversations with multiple AI agents.
-                                    </Chip>
-                                </div>
-                                <Chip
-                                    variant={"flat"} color={"default"}
-                                    className={"shrink bg-transparent p-2 py-4 rounded-xl border-2 border-default/[.5] text-foreground/[.75]"}>
-                                    Hide
-                                </Chip>
-                            </div>
-                            <Chip variant={"flat"} color={"warning"}
-                                  className={"w-full h-fit text-wrap flex-wrap p-2 rounded-xl border-2 border-warning/[.125] max-w-full"}
-                                  aria-multiline>This tool is not intended to be used for 1 on 1 conversations, with a
-                                human
-                                and AI. For that, we recommend using OpenWebUI in conjunction with Ollama!</Chip>
-                            {page == 0 && <Chip variant={"flat"} color={"secondary"}
-                                                className={"w-full h-fit text-wrap flex-wrap p-2 rounded-xl border-2 border-secondary/[.125] text-secondary max-w-full"}
-                                                aria-multiline>For an OpenAI API compatible server we recommend:
-                                Ollama</Chip>}
+                        <div className={"w-full flex flex-col gap-2"}>
                             <div className={"w-full flex gap-2 justify-center pt-3"}>
                                 {Array(2).fill(0).map((_, i) => <>
                                     <div key={i}
@@ -178,6 +157,13 @@ export function MainMenuModal() {
                 <Chip variant={"faded"} className={"absolute bottom-0 right-0 text-xs z-[999] m-1 p-0"}>
                     Made in 🇩🇪 🇪🇺 mit ❤️
                 </Chip>
+                <div className={"absolute bottom-0 left-0 m-1 p-0 z-[999] flex gap-2"}>
+                    <CardStack>
+                        <StackCard id={"main1"} isDismissible><>Test content</></StackCard>
+                        <StackCard id={"main2"} isDismissible><>Test content</></StackCard>
+                        <StackCard id={"main3"} isDismissible><>Test content</></StackCard>
+                    </CardStack>
+                </div>
             </Modal>
         </>
     )

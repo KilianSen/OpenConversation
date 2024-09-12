@@ -37,10 +37,11 @@ function Layout({children}: { children?: ReactNode }) {
 
 export type UserSettings = {
     test: string;
+    stackCards: { [id: string]: boolean };
 }
 
 function Provider({children}: { children?: ReactNode }) {
-    return <SettingsProvider defaultValue={{} as UserSettings} localStoragePrefix={"user-settings-"}>
+    return <SettingsProvider defaultValue={{stackCards: {}} as UserSettings} localStoragePrefix={""}>
         <NextUIProvider>
             <NextThemesProvider attribute={"class"} defaultTheme={"dark"}>
                 <LocalStorageProjectProvider>
